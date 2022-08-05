@@ -16,6 +16,7 @@ import { CoursesService } from '../service/courses.service';
   styleUrls: ['create-course.component.css']
 })
 export class CreateCourseComponent implements OnInit {
+  
   courseId: string;
 
   form = this.fb.group({
@@ -27,18 +28,20 @@ export class CreateCourseComponent implements OnInit {
     promoStartAt: [null],
   })
 
-  constructor(private fb: FormBuilder, private CoursesService: CoursesService, private afs: AngularFirestore,
-    private route: Router) {
-
-  }
+  constructor(
+    private fb: FormBuilder,
+    private CoursesService: CoursesService,
+    private afs: AngularFirestore,
+    private route: Router) {}
 
   ngOnInit() {
     this.courseId = this.afs.createId()
   }
+
   onCreateCourse() {
 
     const val = this.form.value;
-    
+
     const newCourse: Partial<Course> = {
       description: val.description,
       url: val.url,

@@ -9,19 +9,35 @@ import { AngularFireAuthGuard, hasCustomClaim, redirectUnauthorizedTo } from '@a
 import { CreateUserComponent } from './create-user/create-user.component';
 import { CoursesResolver } from './service/courses.resolver';
 
+const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
+
+const adminOnly = () => hasCustomClaim("admin")
+
 const routes: Routes = [
   {
     path: '',
-    component: HomeComponent
+    component: HomeComponent,
+    canActivate: [AngularFireAuthGuard],
+    data: {
+      authGardPipe: redirectUnauthorizedToLogin
+    }
   },
   {
     path: 'create-course',
-    component: CreateCourseComponent
+    component: CreateCourseComponent,
+    canActivate: [AngularFireAuthGuard],
+    data: {
+      authGardPipe: adminOnly
+    }
 
   },
   {
     path: 'create-user',
-    component: CreateUserComponent
+    component: CreateUserComponent,
+    canActivate: [AngularFireAuthGuard],
+    data: {
+      authGardPipe: adminOnly
+    }
 
   },
   {
@@ -37,6 +53,10 @@ const routes: Routes = [
     component: CourseComponent,
     resolve: {
       course: CoursesResolver
+    },
+    canActivate: [AngularFireAuthGuard],
+    data: {
+      authGardPipe: redirectUnauthorizedToLogin
     }
   },
   {

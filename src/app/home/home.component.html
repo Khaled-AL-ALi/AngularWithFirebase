@@ -3,8 +3,15 @@
     <div class="header">
 
         <h2 class="title">All Courses</h2>
-        <ng-container *ngIf="(user.roles |async)as roles">
+        <!-- <ng-container *ngIf="(user.roles |async)as roles">
             <ng-container *ngIf="roles.admin">
+                <button mat-mini-fab color="accent" routerLink="/create-course">
+                    <mat-icon class="add-course-btn">add</mat-icon>
+                </button>
+            </ng-container>
+        </ng-container> -->
+        <ng-container >
+            <ng-container >
                 <button mat-mini-fab color="accent" routerLink="/create-course">
                     <mat-icon class="add-course-btn">add</mat-icon>
                 </button>

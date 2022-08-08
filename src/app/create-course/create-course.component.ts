@@ -16,8 +16,10 @@ import { CoursesService } from '../service/courses.service';
   styleUrls: ['create-course.component.css']
 })
 export class CreateCourseComponent implements OnInit {
-  
+
   courseId: string;
+  percentageChanges: Observable<number>;
+  iconUrl: string
 
   form = this.fb.group({
     description: ['', Validators.required],
@@ -32,7 +34,39 @@ export class CreateCourseComponent implements OnInit {
     private fb: FormBuilder,
     private CoursesService: CoursesService,
     private afs: AngularFirestore,
-    private route: Router) {}
+    private route: Router,
+    private storage: AngularFireStorage) { }
+
+
+
+  uploadthumbnail(event) {
+
+    const file: File = event.target.files[0];
+    console.log(file.name);
+
+    const filepath = `courses/${this.courseId}/${file.name}`
+
+    const task = this.storage.upload(filepath, file, {
+      cacheControl: "max-age=2592000,public"
+    })
+    task.snapshotChanges().subscribe()
+    this.percentageChanges = task.percentageChanges();
+
+    task.snapshotChanges()
+      .pipe(
+        last(),
+        concatMap(() => this.storage.ref(filepath).getDownloadURL()),
+        tap(url => this.iconUrl = url),
+        catchError(err => {
+          console.log(err);
+          alert("could not download Image or the size is too big!")
+          return throwError(err)
+        })
+
+      ).subscribe()
+
+  }
+
 
   ngOnInit() {
     this.courseId = this.afs.createId()
